@@ -1,13 +1,32 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
+const dotEnv = require('dotenv');
+const v1Router = require('./routers/v1/index');
+const mongoose = require('mongoose');
 
 
 const app = new Koa();
 const router = new Router();
+dotEnv.config();
 
-const v1Router = require('./routers/v1/index');
+const port = process.env.PORT || 4000;
 
+// DB connect
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  // useFindAndModify: false,
+}).then(() => {
+  console.log('connected to MongoDB');
+}).catch(e => {
+  console.error('db is not connected and exception: ', e);
+});
+
+
+
+
+// default router
 router.get('/', ctx => {
   ctx.body = "Home";
 });
@@ -15,6 +34,7 @@ router.get('/', ctx => {
 
 // library use -
 router.use(bodyParser());
+
 
 
 // use root router
@@ -27,6 +47,6 @@ router.use('/v1', v1Router.routes());
 
 
 
-app.listen(4000, () => {
-  console.log('server is listening port: ' + 4000);
+app.listen(port, () => {
+  console.log('server is listening port: ' + port);
 })
