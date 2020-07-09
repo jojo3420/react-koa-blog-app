@@ -1,5 +1,5 @@
 
-### blog-app 
+### blog-index 
 
 backend: node.js koa f/w
 client: react 
