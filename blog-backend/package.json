@@ -1,20 +1,28 @@
 {
   "name": "blog-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^8.2.0",
     "koa": "^2.13.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^9.1.0",
-    "mongoose": "^5.9.22"
+    "mongoose": "^5.9.23"
   },
   "scripts": {
     "start": "nodemon src",
-    "start-dev": "nodemon --watch src src/index.js"
+    "start-dev": "nodemon --watch src/ src/index.js"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": true,
+    "useTabs": false,
+    "tabWidth": 2,
+    "printWidth": 80
   }
 }
