@@ -4,12 +4,8 @@ const controller = require('./posts.control');
 const router = new Router();
 
 
-const {
-  list, write, read,
-  remove, replace, update,
-} = controller;
 
-const log = (ctx, next) => {
+const log = async (ctx, next) => {
   const log = {
     method: ctx.method,
     path: ctx.path,
@@ -17,15 +13,19 @@ const log = (ctx, next) => {
     body: ctx.request.body ? ctx.request.body : {},
   };
   console.log({ '요청 로그: ': log });
-  next();
+  await next();
 }
+
+const {
+  list, write, read,
+  remove, update, validator
+} = controller;
 
 router.get('/', log, list);
 router.post('/', log, write);
-router.get('/:id', log, read);
-router.delete('/:id', log, remove);
-router.put('/:id', log, replace);
-router.patch('/:id', log, update);
+router.get('/:id', log, validator,  read);
+router.delete('/:id', log, validator, remove);
+router.put('/:id', log, validator, update);
 
 
 
