@@ -4,7 +4,7 @@ const bodyParser = require('koa-bodyparser');
 const dotEnv = require('dotenv');
 const v1Router = require('./routers/v1/index');
 const mongoose = require('mongoose');
-
+// const createFakeData = require('./createFakeData');
 
 const app = new Koa();
 const router = new Router();
@@ -18,12 +18,11 @@ mongoose.connect(process.env.MONGO_URI, {
   useUnifiedTopology: true,
   useFindAndModify: false,
 }).then(() => {
+  // createFakeData();
   console.log('connected to MongoDB');
 }).catch(e => {
   console.error('db is not connected and exception: ', e);
 });
-
-
 
 
 // default router

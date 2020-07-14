@@ -18,14 +18,14 @@ const log = async (ctx, next) => {
 
 const {
   list, write, read,
-  remove, update, validator
+  remove, update, validatorObjectId
 } = controller;
 
 router.get('/', log, list);
 router.post('/', log, write);
-router.get('/:id', log, validator,  read);
-router.delete('/:id', log, validator, remove);
-router.put('/:id', log, validator, update);
+router.get('/:id', log, validatorObjectId,  read);
+router.delete('/:id', log, validatorObjectId, remove);
+router.put('/:id', log, validatorObjectId, update);
 
 
 
