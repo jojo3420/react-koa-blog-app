@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "dotenv": "^8.2.0",
     "eslint-config-prettier": "^6.11.0",
     "joi": "^14.3.1",
@@ -14,7 +15,7 @@
   },
   "scripts": {
     "start": "nodemon src",
-    "start:dev": "nodemon --watch src/ src/index.js"
+    "start:dev": "nodemon --watch src/ src/app.js"
   },
   "devDependencies": {
     "eslint": "^7.4.0",

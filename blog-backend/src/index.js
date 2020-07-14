@@ -45,6 +45,13 @@ app.use(router.allowedMethods());
 router.use('/v1', v1Router.routes());
 
 
+// Page NOT FOUND
+app.use(ctx => {
+  ctx.status = 404;
+  ctx.body = {
+    error: 'PAGE_NOT_FOUND',
+  }
+});
 
 app.listen(port, () => {
   console.log('server is listening port: ' + port);

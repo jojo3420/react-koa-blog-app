@@ -1,0 +1,23 @@
+
+// Resiter user
+POST http://localhost:4000/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "jojo",
+  "password": "test1234"
+}
+
+###
+
+
+// Login
+POST http://localhost:4000/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "jojo",
+  "password": "test1234"
+}
+
+###
