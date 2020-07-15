@@ -41,7 +41,7 @@ exports.register = async ctx => {
     const newUser = new User({ username });
     await newUser.setPassword(password);
     await newUser.save();
-    ctx.body = await newUser.serialize();
+    ctx.body = newUser.serialize();
   } catch (e) {
     ctx.throw(500, e);
   }

@@ -29,7 +29,7 @@ schema.methods.checkPassword = async function(password) {
   return result; //true or false
 };
 
-schema.methods.serialize = async function() {
+schema.methods.serialize = function() {
   const user = this.toJSON();
   delete user.hashedPassword;
   return user;
