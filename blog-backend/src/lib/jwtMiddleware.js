@@ -3,7 +3,7 @@ const User = require('../models/user');
 
 const checkToken = async (ctx, next) => {
   const token = ctx.cookies.get('access_token');
-  // console.log({ token });
+  // console.log({ jwtMiddleware_token: token });
   if (!token) {
     return next();
   }

@@ -10,6 +10,12 @@ const schema = new Schema({
     type: Date,
     default: Date.now
   },
+  // user 정보 추가
+  user: {
+    _id: mongoose.Types.ObjectId,
+    username: String,
+  }
+
 });
 
 const Post = mongoose.model('Post', schema);

@@ -16,9 +16,34 @@ exports.validatorObjectId = async (ctx, next) => {
     };
     return;
   }
-  // return next();
   await next();
 };
+
+exports.checkIsOwner = async (ctx, next) => {
+  const { id } = ctx.params;
+  const post = await Post.findById(id);
+  if (!post) {
+    ctx.status = 401;
+    ctx.body = {
+      message: 'post is empty... ',
+      id,
+    };
+    return;
+  }
+  const { user } = ctx.state;
+  if (user._id.toString() !== post.user._id.toString()) {
+     ctx.status = 403; // Forbidden
+     ctx.body = {
+       message: '해당 포스트의 작성자가 아닙니다.',
+       id,
+     };
+     return;
+  }
+  await next();
+}
+
+
+
 
 /**
  * 신규 포스트 등록
@@ -44,7 +69,9 @@ exports.write = async ctx => {
     const post = new Post({
       title,
       body,
-      tags
+      tags,
+      // 유저 추가
+      user: ctx.state.user,
     });
     await post.save();
     ctx.status = 200;
@@ -57,26 +84,32 @@ exports.write = async ctx => {
 };
 
 /**
- * 포스트 전체 목록 조회
- * GET /v1/posts
+ * 포스트 전체 목록 조회 or by tags, by username
+ * GET /v1/posts?username=jojo&tag=love
  * @param ctx
  */
 exports.list = async (ctx) => {
   const page = parseInt(ctx.request.query.page || '1', 10);
+  const { tag, username } = ctx.query;
+  const query = {
+    ...( username ? {'user.username': username} : {}),
+    ...(tag ? { tags: tag }: {})
+  };
+
+
   if (page < 1) {
     ctx.status = 400;
     return;
   }
   try {
-    const posts = await Post.find()
+    const posts = await Post.find(query)
       .sort({ _id: -1 })
       .limit(10)
       .skip((page - 1) * 10)
       .lean()
       .exec();
-    const totalPostCnt = await Post.countDocuments().exec();
+    const totalPostCnt = await Post.countDocuments(query).exec();
     ctx.set('Last-Page', Math.ceil(totalPostCnt / 10));
-    // ctx.body = posts;
     ctx.body = posts.map(post => ({
       ...post,
       body: post.body.length < 200 ? post.body : `${post.body.slice(0, 200)} ...`,
@@ -138,8 +171,6 @@ exports.remove = async ctx => {
  * @param ctx
  */
 exports.update = async ctx => {
-
-
   const schema = Joi.object().keys({
     title: Joi.string(),
     body: Joi.string(),
@@ -171,3 +202,5 @@ exports.update = async ctx => {
     ctx.throw(500, e);
   }
 };
+
+
