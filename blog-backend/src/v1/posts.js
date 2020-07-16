@@ -10,18 +10,21 @@ const logging = async (ctx, next) => {
     params: ctx.params,
     body: ctx.request.body || {}
   });
-  next();
+  await next();
 };
 
-const { save, list ,find, replace, update, remove } = control;
+const {
+  save, list ,find, update, remove,
+  validateObjectId,
+
+} = control;
 
 
 router.get('/', logging, list);
-router.get('/:id', logging, find);
+router.get('/:id', logging, validateObjectId, find);
 router.post('/', logging, save);
-router.put('/:id', logging, replace);
-router.patch('/:id', logging, update);
-router.delete('/:id', logging, remove);
+router.patch('/:id', logging, validateObjectId, update);
+router.delete('/:id', logging, validateObjectId, remove);
 
 
 

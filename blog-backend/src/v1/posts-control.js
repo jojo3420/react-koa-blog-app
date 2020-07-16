@@ -1,83 +1,163 @@
+const Post = require('../models/post');
+const Joi = require('joi');
+const mongoose = require('mongoose');
 
 
-let postId = 1;
-const posts = [
-  {id: 1, title: 'basic', body: 'good' },
-]
+exports.validateObjectId = async (ctx, next) => {
+  const { ObjectId } = mongoose.Types;
+  const { id } = ctx.params;
+  const r = ObjectId.isValid(id);
+  if (!r) {
+    ctx.status = 400;
+    ctx.body = {
+      message: 'id is not mongodb objectId!',
+    };
+    return;
+  }
 
-// save post
-exports.save = ctx => {
-  const { title, body } = ctx.request.body;
-  if (title && body) {
-    posts.push({
-      id: ++postId,
-      title,
-      body
-    });
+  await next();
+}
+
+
+/**
+ * Save Post
+ * POST /v1/posts
+ */
+exports.save = async (ctx) => {
+
+  // validate
+  const schema = Joi.object().keys({
+    title: Joi.string().required(),
+    body: Joi.string().required(),
+    tags: Joi.array().items(Joi.string()).required(),
+  });
+  const{ error } = Joi.validate(ctx.request.body, schema);
+  if (error) {
+    ctx.status = 400; // Bad Reqeust
+    ctx.body = error;
+    return;
+  }
+
+  const { title, body, tags } = ctx.request.body;
+  try {
+    const post = new Post({ title, body, tags });
+    await post.save();
+
     ctx.status = 201; // created
-    return;
-  }
-
-  ctx.status = 404;
-  ctx.body = {
-    message: '포스트 등록 실패',
-  };
-};
-
-exports.list = ctx => {
-  ctx.body = posts;
-};
-
-exports.find = ctx => {
-  const { id } = ctx.params;
-  const post = posts.find(p => p.id === parseInt(id, 10));
-  if (post) {
     ctx.body = post;
-    return;
+
+  } catch (e) {
+    ctx.throw(500, e);
   }
-  ctx.status = 404;
-  ctx.body = {
-    message: 'post is not exist.'
-  };
+
+
+
 };
 
-exports.replace = ctx => {
-  const { id } = ctx.params;
-  const index = posts.findIndex(p => p.id === parseInt(id, 10));
-  if (index > -1) {
-    posts[index] = { ...posts[index], ...ctx.request.body };
-    ctx.body = posts[index];
-    return;
-  }
-  ctx.status = 404;
-  ctx.body = {
-    message: 'post is not exist.'
+/**
+ * post list
+ * GET /v1/posts?username=jojo&tag=love&page=1
+ * @param ctx
+ */
+exports.list = async ctx => {
+  const page = parseInt(ctx.query.page || '1', 10);
+  const { username, tag } = ctx.query;
+  const query = {
+    ...( username ? { 'user.username': username } : {}),
+    ...( tag ? { tags: tag } : {}),
   };
+
+  try {
+    const list = await Post.find(query)
+      .sort({ _id: -1 }) // DESC
+      .limit(10)
+      .skip((page - 1) * 10)
+      .lean()
+      .exec();
+
+    ctx.body = list.map(post =>
+      post.body.length < 200
+        ? post
+        : {...post, body: `${post.splice(0, 200)}...` },
+    );
+
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+
 };
 
-exports.update = ctx => {
+
+/**
+ * Find by postId
+ * GET /v1/posts/postId
+ * @param ctx
+ * @return {Promise<void>}
+ */
+exports.find = async ctx => {
   const { id } = ctx.params;
-  const index = posts.findIndex(p => p.id === parseInt(id, 10));
-  if (index > -1) {
-    const { body } = ctx.request.body;
-    posts[index].body = body;
-    ctx.body = posts[index];
+  try {
+    const post = await Post.findOne({ _id: id });
+    if (!post) {
+      ctx.status = 404;
+      ctx.body = {
+        message: 'post is not exist.'
+      };
+      return;
+    }
+
+    ctx.body = post;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+
+};
+
+/**
+ * Modify Post content
+ * PUT /v1/posts/postId
+ * @param ctx
+ */
+exports.update = async ctx => {
+  const { id } = ctx.params;
+
+  const schema = Joi.object().keys({
+    title: Joi.string(),
+    body: Joi.string(),
+    tags: Joi.array().items(Joi.string()),
+  });
+  const { value, error } = Joi.validate(ctx.request.body, schema);
+  if (error) {
+    ctx.status = 400;
+    ctx.body = error;
     return;
+  }
+  const { title, body, tags } = ctx.request.body;
+  try {
+    const post = await Post.findByIdAndUpdate( id, { title, body, tags});
+    ctx.status = 202; // Accepted
+    ctx.body = post;
+  } catch (e) {
+    ctx.throw(500, e);
   }
 };
 
-exports.remove = ctx => {
+exports.remove = async ctx => {
   const { id } = ctx.params;
-  const index = posts.findIndex(p => p.id === parseInt(id, 10));
-  if (index > -1) {
-    posts.splice(index, 1);
-    ctx.status = 204;
-    return;
+  try {
+    const r = await Post.findByIdAndRemove({ _id: id});
+    console.log({ r });
+    if (!r) {
+      ctx.status = 404;
+      ctx.body = {
+        message: 'post is not exist.'
+      };
+      return;
+    }
+    ctx.status = 204; // no content
+  } catch (e) {
+    ctx.throw(500, e);
   }
 
-  ctx.status = 404;
-  ctx.body = {
-    message: 'post is not exist.'
-  };
 
 };
