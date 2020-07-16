@@ -7,6 +7,8 @@ const Joi = require('joi');
  * @return {Promise<void>}
  */
 exports.register = async ctx => {
+
+  // Validate
   const schema = Joi.object().keys({
     username: Joi.string()
       .alphanum()
@@ -42,6 +44,14 @@ exports.register = async ctx => {
     await newUser.setPassword(password);
     await newUser.save();
     ctx.body = newUser.serialize();
+
+    // set token to cookies
+    const token = newUser.generateToken();
+    ctx.cookies.set('access_token', token, {
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      httpOnly: true,
+    })
+
   } catch (e) {
     ctx.throw(500, e);
   }
@@ -65,7 +75,8 @@ exports.login = async ctx => {
  }
 
  try {
-   const user = await User.findByUsername(username);
+   // const user = await User.findByUsername(username);
+   const user = await User.findOne({ username });
    if (!user) {
      ctx.status = 404;
      ctx.body = {
@@ -85,9 +96,14 @@ exports.login = async ctx => {
      return;
    }
 
-   const json = user.toJSON();
-   delete json.hashedPassword;
-   ctx.body = json;
+   ctx.body = user.serialize();
+
+   // set token to cookies
+   const token = user.generateToken();
+   ctx.cookies.set('access_token', token, {
+     maxAge: 1000 * 60 * 60 * 24 * 7, // 7days
+     httpOnly: true,
+   });
 
  } catch (e) {
    ctx.throw(500, e);
@@ -102,9 +118,9 @@ exports.login = async ctx => {
  * @return {Promise<void>}
  */
 exports.logout = async ctx => {
-  const { username } = ctx.request.params;
   try {
-
+    ctx.cookies.set('access_token', '');
+    ctx.status = 204;
 
   } catch (e) {
     ctx.throw(500, e);
@@ -114,6 +130,11 @@ exports.logout = async ctx => {
 
 
 exports.check = async ctx => {
-
+  const user = ctx.state.user;
+  if (!user) {
+    ctx.status = 401;
+    return;
+  }
+  ctx.body = user;
 };
 

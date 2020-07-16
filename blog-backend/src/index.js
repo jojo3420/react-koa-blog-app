@@ -2,14 +2,17 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const dotEnv = require('dotenv');
-const v1Router = require('./routers/v1/index');
 const mongoose = require('mongoose');
-// const createFakeData = require('./createFakeData');
+dotEnv.config();
+
+
+//
+const jwtMiddleware = require('./lib/jwtMiddleware');
+const v1Router = require('./routers/v1/index');
+
 
 const app = new Koa();
 const router = new Router();
-dotEnv.config();
-
 const port = process.env.PORT || 4000;
 
 // DB connect
@@ -33,6 +36,11 @@ router.get('/', ctx => {
 
 // library use -
 router.use(bodyParser());
+router.use(jwtMiddleware);
+
+
+//module router
+router.use('/v1', v1Router.routes());
 
 
 
@@ -40,9 +48,6 @@ router.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-
-//module router
-router.use('/v1', v1Router.routes());
 
 
 // Page NOT FOUND

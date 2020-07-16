@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const { Schema } = mongoose;
 
@@ -19,7 +20,7 @@ schema.methods.setPassword = async function(password) {
     throw new Error('set Password - hash is empty..');
   }
   this.hashedPassword = hash;
-}
+};
 
 schema.methods.checkPassword = async function(password) {
   if (!password) {
@@ -43,6 +44,28 @@ schema.statics.findByUsername = async function(username) {
   }
   return user;
 };
+
+
+schema.methods.generateToken = function() {
+
+  // 1.토큰을 만드는데 넣고 싶은 데이터 ,
+  // 2. sign secret key
+  // 3. options(토큰 유효일)
+  const token = jwt.sign(
+    {
+      _id: this.id,
+      username: this.username
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: '7d', // 7days
+    },
+  );
+  // console.log({ token });
+  return token;
+
+};
+
 
 const User = mongoose.model('User', schema);
 

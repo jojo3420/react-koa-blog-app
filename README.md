@@ -2,6 +2,17 @@
 ### blog-app 
 
 backend: node.js koa f/w
+dependency
+ koa, koa-bodyparser, koa-router
+ 패스워드 암호화: bcrypt
+ JWT: jsonwebkoken   
+ https://www.npmjs.com/package/jsonwebtoken
+ mac os random hash key 만들기 
+ $ openssl rand -hex 64
+ 콘솔에서 명령어 실행하면 해시 리턴됨 
+ 
+
+
 client: react 
 리액트를 다루는 기술 final project 
 
@@ -24,4 +35,6 @@ blog-backend
 ### DELETE /posts/:id/comments/:commentId
 특정 포스트의 특정 덧글 삭제
 
-____
+__
+
+

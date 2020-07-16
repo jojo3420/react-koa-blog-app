@@ -4,7 +4,7 @@ POST http://localhost:4000/v1/auth/register
 Content-Type: application/json
 
 {
-  "username": "jojo",
+  "username": "jojo415",
   "password": "test1234"
 }
 
@@ -19,5 +19,12 @@ Content-Type: application/json
   "username": "jojo",
   "password": "test1234"
 }
+
+###
+
+// check
+GET http://localhost:4000/v1/auth/check
+Accept: application/json
+
 
 ###
