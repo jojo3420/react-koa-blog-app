@@ -1,9 +1,11 @@
 import React from 'react';
+import LoginFormContainer from 'containers/auth/LoginFormContainer';
 
-function LoginPage(props) {
+
+function LoginPage({ }) {
   return (
     <div>
-      <h2>Login page</h2>
+      <LoginFormContainer />
     </div>
   );
 }

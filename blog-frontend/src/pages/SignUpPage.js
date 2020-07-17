@@ -1,9 +1,11 @@
 import React from 'react';
+import SignUpFormContainer from 'containers/auth/SignUpFormContainer';
+
 
 function SignUpPage(props) {
   return (
     <div>
-      <h2>Sign Up</h2>
+      <SignUpFormContainer />
     </div>
   );
 }
