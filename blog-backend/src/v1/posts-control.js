@@ -24,7 +24,6 @@ exports.validateObjectId = async (ctx, next) => {
  * POST /v1/posts
  */
 exports.save = async (ctx) => {
-
   // validate
   const schema = Joi.object().keys({
     title: Joi.string().required(),
@@ -39,13 +38,16 @@ exports.save = async (ctx) => {
   }
 
   const { title, body, tags } = ctx.request.body;
+  const { user } = ctx.state;
+  console.log({ user });
   try {
-    const post = new Post({ title, body, tags });
+    const post = new Post({
+      title, body, tags, user,
+    });
     await post.save();
 
     ctx.status = 201; // created
     ctx.body = post;
-
   } catch (e) {
     ctx.throw(500, e);
   }
@@ -134,7 +136,9 @@ exports.update = async ctx => {
   }
   const { title, body, tags } = ctx.request.body;
   try {
-    const post = await Post.findByIdAndUpdate( id, { title, body, tags});
+    const post = await Post.findByIdAndUpdate( id, { title, body, tags }, {
+      new: true
+    });
     ctx.status = 202; // Accepted
     ctx.body = post;
   } catch (e) {

@@ -1,5 +1,7 @@
 const Router = require('koa-router');
 const control = require('./posts-control');
+const isOwnerCheckMiddleware = require('../lib/isOwnerCheckMiddleware');
+
 const router = new Router();
 
 
@@ -21,10 +23,10 @@ const {
 
 
 router.get('/', logging, list);
-router.get('/:id', logging, validateObjectId, find);
 router.post('/', logging, save);
-router.patch('/:id', logging, validateObjectId, update);
-router.delete('/:id', logging, validateObjectId, remove);
+router.get('/:id', logging, validateObjectId, find);
+router.patch('/:id', logging, validateObjectId, isOwnerCheckMiddleware, update);
+router.delete('/:id', logging, validateObjectId, isOwnerCheckMiddleware, remove);
 
 
 
