@@ -5,6 +5,8 @@ const bodyParser = require('koa-bodyparser');
 const mongoose = require('mongoose');
 
 const v1Router = require('./v1/index');
+const hasTokenMiddleware = require('./lib/hasTokenMiddleware');
+
 
 
 dotEnv.config();
@@ -38,7 +40,8 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 // sub router
-router.use('/v1', v1Router.routes());
+
+router.use('/v1',hasTokenMiddleware, v1Router.routes());
 
 
 app.use((ctx) => {
