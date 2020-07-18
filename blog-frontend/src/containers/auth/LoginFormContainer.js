@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import LoginForm from 'components/auth/LoginForm';
 import useActions from 'lib/hooks/useActions';
@@ -7,7 +7,7 @@ import { onLogin, onCheckLogin } from 'modules/auth';
 import { message } from 'antd';
 
 function LoginFormContainer({ history }) {
-  const { login, loading } = useSelector(({ auth, loading }) => ({
+  const { login } = useSelector(({ auth, loading }) => ({
     login: auth.login,
     loading: loading['auth/LOGIN'],
   }));
@@ -24,7 +24,7 @@ function LoginFormContainer({ history }) {
       message.success('로그인 성공.');
       history.push('/');
     },
-    [handleLogin, handleCheckLogin],
+    [handleLogin, handleCheckLogin, history],
   );
   // login error 처리
   useEffect(() => {

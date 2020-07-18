@@ -1,4 +1,4 @@
-import { createAction, handleActions } from 'redux-actions';
+import { handleActions } from 'redux-actions';
 import makeActionTypes from 'lib/makeActionTypes';
 import createRequestThunk from 'lib/createRequestThunk';
 import * as authApi from 'lib/api/auth';

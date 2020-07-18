@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { message } from 'antd';
 
 function SignUpFormContainer({ history }) {
-  const { signUp, loading } = useSelector(({ loading, auth }) => {
+  const { signUp } = useSelector(({ loading, auth }) => {
     return {
       signUp: auth.signUp,
       loading: loading['auth/SIGN_UP'],
@@ -26,13 +26,12 @@ function SignUpFormContainer({ history }) {
       if (password !== confirmPassword) {
         return message.info('패스워드가 불일치 합니다.');
       }
-
       await handleSignUp({ username, password });
       await handleCheckLogin();
       message.success('회원가입 성공!');
       history.push('/');
     },
-    [signUp, handleSignUp],
+    [handleSignUp, handleCheckLogin, history],
   );
   useEffect(() => {
     if (signUp && signUp.status >= 400) {

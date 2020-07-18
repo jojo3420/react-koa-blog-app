@@ -1,10 +1,11 @@
 import React from 'react';
+import TestLayout from 'components/layout/TestLayout';
 
 function PostListPage(props) {
   return (
-    <div>
+    <TestLayout>
       <h2>Post List</h2>
-    </div>
+    </TestLayout>
   );
 }
 
