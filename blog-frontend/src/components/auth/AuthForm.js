@@ -1,23 +1,19 @@
 import React from 'react';
-import {
-  Form, Input, Button, Checkbox,
-  Typography,
-} from 'antd';
-
+import { Form, Input, Button, Checkbox, Typography } from 'antd';
 
 const layout = {
   labelCol: {
-    span: 8
+    span: 8,
   },
   wrapperCol: {
-    span: 16
-  }
+    span: 16,
+  },
 };
 const tailLayout = {
   wrapperCol: {
     offset: 8,
-    span: 16
-  }
+    span: 16,
+  },
 };
 
 const { Title } = Typography;
@@ -25,11 +21,11 @@ const { Title } = Typography;
 function AuthForm({ type, title, buttonLabel, initialValues, onSubmit }) {
   const [form] = Form.useForm();
 
-  const onFinish = values => {
+  const onFinish = (values) => {
     console.log('Success:', values);
     onSubmit(values);
   };
-  const onFinishFailed = errorInfo => {
+  const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
   const onReset = () => {
@@ -59,11 +55,11 @@ function AuthForm({ type, title, buttonLabel, initialValues, onSubmit }) {
           rules={[
             {
               required: true,
-              message: 'Please input your username!'
-            }
+              message: 'Please input your username!',
+            },
           ]}
         >
-          <Input/>
+          <Input />
         </Form.Item>
 
         <Form.Item
@@ -72,11 +68,11 @@ function AuthForm({ type, title, buttonLabel, initialValues, onSubmit }) {
           rules={[
             {
               required: true,
-              message: 'Please input your password!'
-            }
+              message: 'Please input your password!',
+            },
           ]}
         >
-          <Input.Password/>
+          <Input.Password />
         </Form.Item>
 
         {type === 'signUp' && (
@@ -86,11 +82,11 @@ function AuthForm({ type, title, buttonLabel, initialValues, onSubmit }) {
             rules={[
               {
                 required: true,
-                message: 'Please input your ConfirmPassword!'
-              }
+                message: 'Please input your ConfirmPassword!',
+              },
             ]}
           >
-            <Input.Password/>
+            <Input.Password />
           </Form.Item>
         )}
 
@@ -109,9 +105,9 @@ function AuthForm({ type, title, buttonLabel, initialValues, onSubmit }) {
           {/*  fill*/}
           {/*</Button>*/}
         </Form.Item>
-      </Form>;
+      </Form>
     </>
   );
-};
+}
 
 export default AuthForm;

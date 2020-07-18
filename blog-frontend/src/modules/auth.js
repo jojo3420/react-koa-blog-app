@@ -36,9 +36,14 @@ const initialState = {
   },
   signUp: {
     auth: null,
-    message: '',
+    responseMessage: '',
+    status: null,
+    e: null,
   },
-  check: false,
+  check: {
+    logged: false,
+    e: null,
+  },
 };
 
 // Reducer
@@ -46,13 +51,15 @@ const auth = handleActions(
   {
     [SIGN_UP_SUCCESS]: (state, { payload: auth }) =>
       produce(state, (draft) => {
+        draft.signUp = initialState.signUp;
         draft.signUp.auth = auth;
-        draft.signUp.message = null;
       }),
-    [SIGN_UP_FAILURE]: (state, { payload: error }) =>
+    [SIGN_UP_FAILURE]: (state, { e }) =>
       produce(state, (draft) => {
         draft.signUp.auth = null;
-        draft.signUp.message = error;
+        draft.signUp.responseMessage = e.response.data.message;
+        draft.signUp.status = e.response.status;
+        draft.signUp.e = e;
       }),
     [LOGIN_SUCCESS]: (state, { payload: auth }) =>
       produce(state, (draft) => {
@@ -69,9 +76,14 @@ const auth = handleActions(
     [LOGOUT_SUCCESS]: (state, { payload }) => produce(state, (draft) => {}),
     [LOGOUT_FAILURE]: (state, { payload }) => produce(state, (draft) => {}),
     [CHECK_LOGIN_SUCCESS]: (state, { payload }) =>
-      produce(state, (draft) => {}),
-    [CHECK_LOGIN_FAILURE]: (state, { payload }) =>
-      produce(state, (draft) => {}),
+      produce(state, (draft) => {
+        draft.check.logged = true;
+      }),
+    [CHECK_LOGIN_FAILURE]: (state, { e }) =>
+      produce(state, (draft) => {
+        draft.check.logged = false;
+        draft.check.e = e;
+      }),
   },
   initialState,
 );
