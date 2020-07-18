@@ -7,7 +7,7 @@ const Joi = require('joi');
  * @param ctx
  * @return {Promise<void>}
  */
-exports.register = async ctx => {
+exports.register = async (ctx) => {
   const schema = Joi.object().keys({
     username: Joi.string().required(),
     password: Joi.string().required(),
@@ -19,7 +19,6 @@ exports.register = async ctx => {
     return;
   }
   const { username, password } = ctx.request.body;
-
 
   // username 중복 검사
   const valid = await User.findOne({ username });
@@ -43,14 +42,12 @@ exports.register = async ctx => {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
     });
-
   } catch (e) {
     ctx.throw(500, e);
   }
 };
 
-
-exports.login = async ctx => {
+exports.login = async (ctx) => {
   const { username, password } = ctx.request.body;
   try {
     const user = await User.findOne({ username });
@@ -58,7 +55,7 @@ exports.login = async ctx => {
       ctx.status = 401;
       ctx.body = {
         message: '회원 아이디를 찾을 수 없습니다.',
-        id,
+        username,
       };
       return;
     }
@@ -79,15 +76,12 @@ exports.login = async ctx => {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-
-
   } catch (e) {
     ctx.throw(500, e);
   }
 };
 
-
-exports.logout = async ctx => {
+exports.logout = async (ctx) => {
   try {
     ctx.cookies.set('access_token', '');
     ctx.status = 204;
@@ -96,20 +90,17 @@ exports.logout = async ctx => {
   }
 };
 
-
-exports.check = async ctx => {
-
+exports.check = async (ctx) => {
   try {
     const { user } = ctx.state;
     if (!user) {
       ctx.status = 400;
       ctx.body = {
         message: '로그인 상태가 아닙니다.',
-      }
+      };
       return;
     }
     ctx.status = 204;
-
   } catch (e) {
     ctx.throw(500, e);
   }
