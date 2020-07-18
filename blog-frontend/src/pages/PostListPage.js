@@ -1,11 +1,11 @@
 import React from 'react';
-import TestLayout from 'components/layout/TestLayout';
+import MyLayout from 'components/layout/MyLayout';
 
 function PostListPage(props) {
   return (
-    <TestLayout>
+    <MyLayout>
       <h2>Post List</h2>
-    </TestLayout>
+    </MyLayout>
   );
 }
 

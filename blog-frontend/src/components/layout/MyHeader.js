@@ -18,12 +18,18 @@ function MyHeader({ menuList }) {
       <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[]}>
         {Array.isArray(menuList) &&
           menuList.map((menu, index) => (
-            <Menu.Item key={menu.id || index}>{menu.title}</Menu.Item>
+            <Menu.Item key={menu.id || index} style={{ float: 'right' }}>
+              {menu.title}
+            </Menu.Item>
           ))}
         {isLogin ? (
-          <Menu.Item key="logout">로그아웃</Menu.Item>
+          <Menu.Item key="logout" style={{ float: 'right' }}>
+            로그아웃
+          </Menu.Item>
         ) : (
-          <Menu.Item key="login">로그인</Menu.Item>
+          <Menu.Item key="login" style={{ float: 'right' }}>
+            로그인
+          </Menu.Item>
         )}
       </Menu>
     </Header>
