@@ -29,7 +29,7 @@ function SignUpFormContainer({ history }) {
       await handleSignUp({ username, password });
       await handleCheckLogin();
       message.success('회원가입 성공!');
-      history.push('/');
+      history.push(`/@${username}`);
     },
     [handleSignUp, handleCheckLogin, history],
   );

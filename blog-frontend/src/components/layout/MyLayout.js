@@ -25,7 +25,8 @@ function MyLayout({ children }) {
               { id: 2, title: 'List' },
             ]}
           />
-          <MyContent />
+          <MyContent children={children} />
+          {/*<MyFooter />*/}
         </Layout>
       </Layout>
     </Layout>

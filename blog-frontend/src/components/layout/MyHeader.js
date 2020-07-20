@@ -2,10 +2,11 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import AppLogo from 'components/layout/AppLogo';
 import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 const { Header } = Layout;
 
-function MyHeader({ menuList }) {
+function MyHeader({ menuList, history }) {
   const { isLogin } = useSelector(({ auth }) => {
     return {
       isLogin: auth.check.logged,
@@ -15,7 +16,12 @@ function MyHeader({ menuList }) {
   return (
     <Header className="header">
       <AppLogo />
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={[]}>
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={[]}
+        onClick={({ key }) => history.push(key)}
+      >
         {Array.isArray(menuList) &&
           menuList.map((menu, index) => (
             <Menu.Item key={menu.id || index} style={{ float: 'right' }}>
@@ -36,4 +42,4 @@ function MyHeader({ menuList }) {
   );
 }
 
-export default MyHeader;
+export default withRouter(MyHeader);

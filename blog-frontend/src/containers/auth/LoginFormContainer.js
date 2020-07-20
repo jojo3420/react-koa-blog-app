@@ -22,7 +22,7 @@ function LoginFormContainer({ history }) {
       await handleLogin(user);
       await handleCheckLogin();
       message.success('로그인 성공.');
-      history.push('/');
+      history.push(`/@${user.username}`);
     },
     [handleLogin, handleCheckLogin, history],
   );
