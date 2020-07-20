@@ -44,6 +44,9 @@ const initialState = {
     logged: false,
     e: null,
   },
+  logout: {
+    e: null,
+  },
 };
 
 // Reducer
@@ -73,11 +76,20 @@ const auth = handleActions(
         draft.login.status = e.response.status;
         draft.login.e = e;
       }),
-    [LOGOUT_SUCCESS]: (state, { payload }) => produce(state, (draft) => {}),
-    [LOGOUT_FAILURE]: (state, { payload }) => produce(state, (draft) => {}),
+    [LOGOUT_SUCCESS]: (state) =>
+      produce(state, (draft) => {
+        draft.login = initialState.login;
+        draft.signUp = initialState.signUp;
+        draft.check = initialState.check;
+      }),
+    [LOGOUT_FAILURE]: (state, { e }) =>
+      produce(state, (draft) => {
+        draft.logout.e = e;
+      }),
     [CHECK_LOGIN_SUCCESS]: (state, { payload }) =>
       produce(state, (draft) => {
         draft.check.logged = true;
+        draft.check.e = null;
       }),
     [CHECK_LOGIN_FAILURE]: (state, { e }) =>
       produce(state, (draft) => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from '../../logo.svg';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 // const cx = cn.bind(styles);
@@ -13,7 +14,11 @@ const Img = styled.img`
 `;
 
 function AppLogo({}) {
-  return <Img src={logo} />;
+  return (
+    <Link to="/">
+      <Img src={logo} />
+    </Link>
+  );
 }
 
 export default AppLogo;

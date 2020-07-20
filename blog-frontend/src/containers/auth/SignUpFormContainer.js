@@ -7,9 +7,10 @@ import { useSelector } from 'react-redux';
 import { message } from 'antd';
 
 function SignUpFormContainer({ history }) {
-  const { signUp } = useSelector(({ loading, auth }) => {
+  const { signUp, check } = useSelector(({ loading, auth }) => {
     return {
       signUp: auth.signUp,
+      check: auth.check,
       loading: loading['auth/SIGN_UP'],
     };
   });
@@ -38,6 +39,13 @@ function SignUpFormContainer({ history }) {
       message.error(signUp.responseMessage || '회원 가입이 실패했습니다.');
     }
   }, [signUp]);
+
+  // login check ok
+  useEffect(() => {
+    if (check.logged) {
+      console.log('login check ok.');
+    }
+  }, [check]);
 
   return <SignUpForm onSubmit={onSignUpSubmit} />;
 }
