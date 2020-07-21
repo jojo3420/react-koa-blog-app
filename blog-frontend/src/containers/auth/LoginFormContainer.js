@@ -7,7 +7,8 @@ import { onLogin, onCheckLogin } from 'modules/auth';
 import { message } from 'antd';
 
 function LoginFormContainer({ history }) {
-  const { login } = useSelector(({ auth, loading }) => ({
+  const { user, login } = useSelector(({ auth, loading }) => ({
+    user: auth.user,
     login: auth.login,
     loading: loading['auth/LOGIN'],
   }));
@@ -22,9 +23,8 @@ function LoginFormContainer({ history }) {
       await handleLogin(user);
       await handleCheckLogin();
       message.success('로그인 성공.');
-      history.push(`/@${user.username}`);
     },
-    [handleLogin, handleCheckLogin, history],
+    [handleLogin, handleCheckLogin],
   );
   // login error 처리
   useEffect(() => {
@@ -32,6 +32,17 @@ function LoginFormContainer({ history }) {
       message.error(login.responseMessage || '로그인이 실패 했습니다.');
     }
   }, [login]);
+
+  useEffect(() => {
+    if (user) {
+      history.push(`/@${user.username}`);
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {
+        console.log('user - 로컬스토리지 저장 실패 ' + e);
+      }
+    }
+  }, [history, user]);
 
   return <LoginForm onSubmit={onLoginSubmit} />;
 }

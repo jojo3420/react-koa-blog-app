@@ -6,6 +6,20 @@ import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from 'modules/store';
+import { onCheckLogin, tempSetUser } from 'modules/auth';
+
+// first start or refresh app run!
+function loadAuthByLocalStorage() {
+  try {
+    const user = localStorage.getItem('user');
+    if (!user) return;
+    store.dispatch(tempSetUser(JSON.parse(user)));
+    store.dispatch(onCheckLogin());
+  } catch (e) {
+    console.log('loadAuthByLocalStorage is not working!' + e);
+  }
+}
+loadAuthByLocalStorage();
 
 ReactDOM.render(
   <React.StrictMode>
