@@ -100,7 +100,8 @@ exports.check = async (ctx) => {
       };
       return;
     }
-    ctx.status = 204;
+    ctx.status = 200;
+    ctx.body = user;
   } catch (e) {
     ctx.throw(500, e);
   }
